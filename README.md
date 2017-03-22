@@ -6,4 +6,4 @@
 
 `npm start`
 
-Navigate to http://locathost:8080/
+Navigate to http://localhost:8080/
