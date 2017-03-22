@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import CesiumComponent from './cesium.jsx';
+import CesiumLayout from './cesiumLayout.jsx';
 import CityList from './cities.jsx';
 
 class Application extends React.Component {
@@ -28,12 +29,12 @@ class Application extends React.Component {
             cities: newCities
         })
     }
+                // <CityList cities={this.state.cities} onChange={this._onCheckboxChange.bind(this)}></CityList>
 
     render() {
         return (
             <div>
-                <CesiumComponent cities={this.state.cities}></CesiumComponent>
-                <CityList cities={this.state.cities} onChange={this._onCheckboxChange.bind(this)}></CityList>
+                <CesiumComponent cities={this.state.cities}/>
             </div>
         );
     }

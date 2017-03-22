@@ -9,6 +9,7 @@ import TileMapServiceImageryProvider from 'cesium/Source/Scene/TileMapServiceIma
 import ProviderViewModel from 'cesium/Source/Widgets/BaseLayerPicker/ProviderViewModel'
 import CreateOpenStreetMapImageryProvider from 'cesium/Source/Scene/createOpenStreetMapImageryProvider'
 import '../styles/cesium.css';
+import '../styles/cesiumDrawHelper.css';
 
 let cesiumViewerOptions = {
     animation: false,
@@ -37,6 +38,7 @@ let cesiumViewerOptions = {
     imageryProvider : new TileMapServiceImageryProvider({url : BuildModuleUrl('Assets/Textures/NaturalEarthII')})
 };
 
+
 class CesiumComponent extends React.Component {
     shouldComponentUpdate() {
         return false;
@@ -45,7 +47,10 @@ class CesiumComponent extends React.Component {
     componentDidMount() {
         // Create the Cesium Viewer
         this.viewer = new CesiumViewer(this.refs.map, cesiumViewerOptions);
-
+        this.drawHelper = new window.DrawHelper(this.viewer.cesiumWidget)
+        this.toolbar = this.drawHelper.addToolbar(this.refs.toolbar, {
+          buttons: ['marker', 'polyline', 'polygon', 'circle', 'extent']
+        });
         // Add the initial points
         this.props.cities.forEach((city) => {
             this.viewer.entities.add(new Entity({
@@ -75,10 +80,15 @@ class CesiumComponent extends React.Component {
             // else if (patch.attribute === 'name') { .. and so on .. }
         });
     }
-
+            // <CesiumDrawHelper cesiumWidget={this.viewer.cesiumWidget}/>
+    
     render() {
         return (
-            <div ref="map">
+            <div>
+                <div ref="toolbar" class="toolbar">
+                </div>
+                <div ref="map">
+                </div>
             </div>
         );
     }
