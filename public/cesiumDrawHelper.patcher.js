@@ -254,17 +254,14 @@ var DrawHelper = (function() {
                 var geometry = this.getGeometry();
                 if(!geometry) {
                     return;
-                }
-
+                }                
                 this._createPrimitive = false;
                 this._ellipsoid = this.ellipsoid;
                 this._granularity = this.granularity;
                 this._height = this.height;
                 this._textureRotationAngle = this.textureRotationAngle;
-                this._id = this.id;
-
-                this._primitive = this._primitive && this._primitive.destroy();
-
+                this._id = this.id;                
+                this._primitive = this._primitive && this._primitive.destroy();                
                 this._primitive = new Cesium.Primitive({
                     geometryInstances : new Cesium.GeometryInstance({
                         geometry : geometry,
@@ -273,9 +270,8 @@ var DrawHelper = (function() {
                     }),
                     appearance : this.appearance,
                     asynchronous : this.asynchronous
-                });
-
-                this._outlinePolygon = this._outlinePolygon && this._outlinePolygon.destroy();
+                });                                
+                this._outlinePolygon = this._outlinePolygon && this._outlinePolygon.destroy();                                                                
                 if(this.strokeColor && this.getOutlineGeometry) {
                     // create the highlighting frame
                     this._outlinePolygon = new Cesium.Primitive({
@@ -291,13 +287,12 @@ var DrawHelper = (function() {
                                 depthTest : {
                                     enabled : true
                                 },
-                                lineWidth : Math.min(this.strokeWidth || 4.0, context._aliasedLineWidthRange[1])
+                                lineWidth : this.strokeWidth || 4.0
                             }
                         })
                     });
                 }
-            }
-
+            }            
             var primitive = this._primitive;
             primitive.appearance.material = this.material;
             primitive.debugShowBoundingVolume = this.debugShowBoundingVolume;
