@@ -39,10 +39,10 @@ let cesiumViewerOptions = {
 };
 
 
-const setToolarsHandlers = (toolbar, scene) => {
-    console.log(toolbar)
-    toolbar.addListener('markerCreated', function(event) {
-        //loggingMessage('Marker created at ' + event.position.toString());
+const setToolarsHandlers = (toolbar, scene, logging) => {
+
+    toolbar.addListener('markerCreated', (event) =>  {
+        logging.innerHTML = 'Marker created at ' + event.position.toString()
         // create one common billboard collection for all billboards
         var b = new Cesium.BillboardCollection();
         scene.primitives.add(b);
@@ -59,8 +59,8 @@ const setToolarsHandlers = (toolbar, scene) => {
         });
         billboard.setEditable();
     });
-    toolbar.addListener('polylineCreated', function(event) {
-        //loggingMessage('Polyline created with ' + event.positions.length + ' points');
+    toolbar.addListener('polylineCreated', (event) =>  {
+        logging.innerHTML = 'Polyline created with ' + event.positions.length + ' points'
         var polyline = new DrawHelper.PolylinePrimitive({
             positions: event.positions,
             width: 5,
@@ -68,24 +68,24 @@ const setToolarsHandlers = (toolbar, scene) => {
         });
         scene.primitives.add(polyline);
         polyline.setEditable();
-        polyline.addListener('onEdited', function(event) {
-            //loggingMessage('Polyline edited, ' + event.positions.length + ' points');
+        polyline.addListener('onEdited', (event) =>  {
+            logging.innerHTML = 'Polyline edited, ' + event.positions.length + ' points'
         });
     });
-    toolbar.addListener('polygonCreated', function(event) {
-        //loggingMessage('Polygon created with ' + event.positions.length + ' points');
+    toolbar.addListener('polygonCreated', (event) =>  {
+        logging.innerHTML = 'Polygon created with ' + event.positions.length + ' points'
         var polygon = new DrawHelper.PolygonPrimitive({
             positions: event.positions,
             material : Cesium.Material.fromType('Checkerboard')
         });
         scene.primitives.add(polygon);
         polygon.setEditable();
-        polygon.addListener('onEdited', function(event) {
-            //loggingMessage('Polygon edited, ' + event.positions.length + ' points');
+        polygon.addListener('onEdited', (event) =>  {
+            logging.innerHTML = 'Polygon edited, ' + event.positions.length + ' points'
         });
     });
-    toolbar.addListener('circleCreated', function(event) {
-        //loggingMessage('Circle created: center is ' + event.center.toString() + ' and radius is ' + event.radius.toFixed(1) + ' meters');
+    toolbar.addListener('circleCreated', (event) =>  {
+        logging.innerHTML = 'Circle created: center is ' + event.center.toString() + ' and radius is ' + event.radius.toFixed(1) + ' meters'
         var circle = new DrawHelper.CirclePrimitive({
             center: event.center,
             radius: event.radius,
@@ -93,21 +93,21 @@ const setToolarsHandlers = (toolbar, scene) => {
         });
         scene.primitives.add(circle);
         circle.setEditable();
-        circle.addListener('onEdited', function(event) {
-            //loggingMessage('Circle edited: radius is ' + event.radius.toFixed(1) + ' meters');
+        circle.addListener('onEdited', (event) =>  {
+            logging.innerHTML = 'Circle edited: radius is ' + event.radius.toFixed(1) + ' meters'
         });
     });
-    toolbar.addListener('extentCreated', function(event) {
+    toolbar.addListener('extentCreated', (event) =>  {
         var extent = event.extent;
-        //loggingMessage('Extent created (N: ' + extent.north.toFixed(3) + ', E: ' + extent.east.toFixed(3) + ', S: ' + extent.south.toFixed(3) + ', W: ' + extent.west.toFixed(3) + ')');
+        logging.innerHTML = 'Extent created (N: ' + extent.north.toFixed(3) + ', E: ' + extent.east.toFixed(3) + ', S: ' + extent.south.toFixed(3) + ', W: ' + extent.west.toFixed(3) + ')'
         var extentPrimitive = new DrawHelper.ExtentPrimitive({
             extent: extent,
             material: Cesium.Material.fromType(Cesium.Material.StripeType)
         });
         scene.primitives.add(extentPrimitive);
         extentPrimitive.setEditable();
-        extentPrimitive.addListener('onEdited', function(event) {
-            //loggingMessage('Extent edited: extent is (N: ' + event.extent.north.toFixed(3) + ', E: ' + event.extent.east.toFixed(3) + ', S: ' + event.extent.south.toFixed(3) + ', W: ' + event.extent.west.toFixed(3) + ')');
+        extentPrimitive.addListener('onEdited', (event) =>  {
+            logging.innerHTML = 'Extent edited: extent is (N: ' + event.extent.north.toFixed(3) + ', E: ' + event.extent.east.toFixed(3) + ', S: ' + event.extent.south.toFixed(3) + ', W: ' + event.extent.west.toFixed(3) + ')'
         });
     });
 }
@@ -124,9 +124,7 @@ class CesiumComponent extends React.Component {
         this.toolbar = this.drawHelper.addToolbar(this.refs.toolbar, {
           buttons: ['marker', 'polyline', 'polygon', 'circle', 'extent']
         });
-        console.log(this.toolbar._listeners.circleCreated)
-        setToolarsHandlers(this.toolbar, this.viewer.cesiumWidget.scene)
-        console.log(this.toolbar._listeners.circleCreated)
+        setToolarsHandlers(this.toolbar, this.viewer.cesiumWidget.scene, this.refs.logging)
         // Add the initial points
         this.props.cities.forEach((city) => {
             this.viewer.entities.add(new Entity({
@@ -164,6 +162,8 @@ class CesiumComponent extends React.Component {
                 <div ref="toolbar" class="toolbar">
                 </div>
                 <div ref="map">
+                </div>
+                <div ref="logging">
                 </div>
             </div>
         );
