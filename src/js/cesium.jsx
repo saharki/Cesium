@@ -5,11 +5,15 @@ import CesiumViewer from 'cesium/Source/Widgets/Viewer/Viewer';
 import Entity from 'cesium/Source/DataSources/Entity';
 import CesiumPatcher from './cesium.patcher.js';
 import Cartesian3 from 'cesium/Source/Core/Cartesian3';
-import TileMapServiceImageryProvider from 'cesium/Source/Scene/TileMapServiceImageryProvider';
-import ProviderViewModel from 'cesium/Source/Widgets/BaseLayerPicker/ProviderViewModel'
-import CreateOpenStreetMapImageryProvider from 'cesium/Source/Scene/createOpenStreetMapImageryProvider'
+import TileMapServiceImageryProvider from 'cesium/Source/Scene/TileMapServiceImageryProvider'
+import KmlDataSource from 'cesium/Source/DataSources/KmlDataSource'
+// import ProviderViewModel from 'cesium/Source/Widgets/BaseLayerPicker/ProviderViewModel'
+// import CreateOpenStreetMapImageryProvider from 'cesium/Source/Scene/createOpenStreetMapImageryProvider'
+// import { DrawHelper as cesiumDrawHelperModule } from './cesiumDrawHelperModule.js'
 import '../styles/cesium.css';
 import '../styles/cesiumDrawHelper.css';
+
+console.log(new TileMapServiceImageryProvider({url : BuildModuleUrl('Assets/Textures/NaturalEarthII')}))
 
 let cesiumViewerOptions = {
     animation: false,
@@ -33,7 +37,7 @@ let cesiumViewerOptions = {
     selectionIndicator: false,
     timeline: false,
     navigationHelpButton: false,
-    navigationInstructionsInitiallyVisible: false,
+    navigationInstructionsInitiallyVisible: true,
     automaticallyTrackDataSourceClocks: false,
     imageryProvider : new TileMapServiceImageryProvider({url : BuildModuleUrl('Assets/Textures/NaturalEarthII')})
 };
@@ -120,6 +124,31 @@ class CesiumComponent extends React.Component {
     componentDidMount() {
         // Create the Cesium Viewer
         this.viewer = new CesiumViewer(this.refs.map, cesiumViewerOptions);
+
+        // var viewer = new Cesium.Viewer('cesiumContainer');
+        this.viewer.dataSources.add(KmlDataSource.load(BuildModuleUrl('Assets/boundaries.kml'),
+            {
+                  camera: this.viewer.scene.camera,
+                  canvas: this.viewer.scene.canvas
+            })
+        )
+        // this.viewer.dataSources.add(KmlDataSource.load(BuildModuleUrl('Assets/populated_places.kml'),
+        //     {
+        //           camera: this.viewer.scene.camera,
+        //           canvas: this.viewer.scene.canvas
+        //     })
+        // )
+        // const layers = this.viewer.scene.imageryLayers;
+        // const blackMarble = layers.addImageryProvider(new Cesium.TileMapServiceImageryProvider({
+        //     url : '//cesiumjs.org/tilesets/imagery/blackmarble',
+        //     maximumLevel : 8,
+        //     credit : 'Black Marble imagery courtesy NASA Earth Observatory'
+        // }));
+
+        // blackMarble.alpha = 0.5; // 0.0 is transparent.  1.0 is opaque.
+
+        // blackMarble.brightness = 2.0; // > 1.0 increases brightness.  < 1.0 decreases.
+
         this.drawHelper = new window.DrawHelper(this.viewer.cesiumWidget)
         this.toolbar = this.drawHelper.addToolbar(this.refs.toolbar, {
           buttons: ['marker', 'polyline', 'polygon', 'circle', 'extent']
@@ -138,9 +167,9 @@ class CesiumComponent extends React.Component {
                 }
             }));
         });
-        this.viewer = new CesiumViewer(this.refs.map, {
-          imageryProvider : new TileMapServiceImageryProvider({url :'Assets/Textures/NaturalEarthII'})
-        })
+        // this.viewer = new CesiumViewer(this.refs.map, {
+        //   imageryProvider : new TileMapServiceImageryProvider({url :'Assets/Textures/NaturalEarthII'})
+        // })
     }
 
     componentWillReceiveProps(nextProps) {
